@@ -1,6 +1,6 @@
 html{
-    padding-top: 110px;
-    scroll-padding-top: 100px;
+    padding-top: 60px;
+    scroll-padding-top: 55px;
     scroll-behavior: smooth;
 }
 
@@ -8,9 +8,9 @@ html{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background-size: auto 90px;
+    background-size: auto 40px;
     width: calc(100% - 20px);
-    height: 90px;
+    height: 40px;
     position: fixed;
     top: 0;
     left: 0;
@@ -39,17 +39,14 @@ html{
     margin-right: 7px;
 }
 
-#base-header #site-title img{
-    height: 38px;
-    margin-top: 4px;
-    /* Render the logo as a white silhouette on the black header bar. */
-    filter: brightness(0) invert(1);
-}
-
-#base-header-popover-icon,
-#base-header-right-mobile img{
-    /* Header UI icons: white on the black bar. */
-    filter: brightness(0) invert(1);
+#base-header #site-title #header-logo{
+    color: var(--header-text);
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 40px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 #base-header a, #base-header-popover-text{
@@ -111,8 +108,11 @@ html{
     border-top: none;
 }
 
-#base-header-right-mobile img{
-    height: 3rem;
+#base-header-mobile-menu-button{
+    color: var(--header-text);
+    font-size: 2rem;
+    line-height: 40px;
+    text-decoration: none;
 }
 
 #base-header-popover-menu{
@@ -138,9 +138,7 @@ html{
 }
 
 #base-header-popover-icon {
-    width: 14px;
-    margin-bottom: 3px;
-    margin-left: 2px;
+    margin-right: 2px;
 }
 
 @media all and (max-width: 960px), only screen and (max-device-width: 768px) {
@@ -159,8 +157,8 @@ html{
         margin-right: 0;
     }
 
-    #base-header-right-mobile img{
-        height: 1.5rem;
+    #base-header-mobile-menu-button{
+        font-size: 1.5rem;
     }
 
     #base-header-mobile-menu{
@@ -191,9 +189,9 @@ html{
         background-size: auto 200px;
     }
 
-    #base-header #site-title img{
-        height: calc(38px * 2);
-        margin-top: 30px;
+    #base-header #site-title #header-logo{
+        font-size: 52px;
+        line-height: 200px;
         margin-left: 20px;
     }
 }
