@@ -153,7 +153,7 @@
 #inventory-table div.item-count{
     position: absolute;
     color: white;
-    font-family: "Minecraftia", monospace;
+    font-family: var(--font-display);
     font-weight: bold;
     bottom: 0;
     right: 0;

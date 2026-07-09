@@ -38,7 +38,7 @@ software set up. You can use that guide to learn how to generate multiworlds. Th
 including multiple games, and hosting multiworlds on the website for ease and convenience.
 
 If you are ready to start randomizing games, or want to start playing your favorite randomizer with others, please join
-our discord server at the [Archipelago Discord](https://discord.gg/8Z65BR2). There are always people ready to answer
+our discord server at the [Archipelago Discord](https://discord.gg/K8YuEt6x3r). There are always people ready to answer
 any questions you might have.
 
 ## What are some common terms I should know?
@@ -69,13 +69,13 @@ comfortable exploiting certain glitches in the game.
 ## I want to develop a game implementation for Archipelago. How do I do that?
 
 The best way to get started is to take a look at our code on GitHub:  
-[Archipelago GitHub Page](https://github.com/ArchipelagoMW/Archipelago).
+[Archipelago GitHub Page](https://github.com/Shhwip/Archipelago).
 
 There, you will find examples of games in the `worlds` folder:  
-[/worlds Folder in Archipelago Code](https://github.com/ArchipelagoMW/Archipelago/tree/main/worlds).
+[/worlds Folder in Archipelago Code](https://github.com/Shhwip/Archipelago/tree/main/worlds).
 
 You may also find developer documentation in the `docs` folder:  
-[/docs Folder in Archipelago Code](https://github.com/ArchipelagoMW/Archipelago/tree/main/docs).
+[/docs Folder in Archipelago Code](https://github.com/Shhwip/Archipelago/tree/main/docs).
 
 If you have more questions regarding development of a game implementation, feel free to ask in the **#ap-world-dev** 
 channel on our Discord.

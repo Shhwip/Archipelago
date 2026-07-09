@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap');
 
 .tracker-container {
     width: 440px;
     box-sizing: border-box;
-    font-family: "Lexend Deca", Arial, Helvetica, sans-serif;
+    font-family: var(--font-body);
     border: 2px solid black;
     border-radius: 4px;
     resize: both;

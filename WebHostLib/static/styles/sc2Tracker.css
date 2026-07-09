@@ -1,6 +1,6 @@
 *{
   margin: 0;
-  font-family: "JuraBook", monospace;
+  font-family: var(--font-body);
 }
 body{
   --icon-size: 36px;

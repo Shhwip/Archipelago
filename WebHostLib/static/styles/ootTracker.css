@@ -38,7 +38,7 @@
 #inventory-table div.item-count {
     position: absolute;
     color: white;
-    font-family: monospace;
+    font-family: var(--font-display);
     font-weight: bold;
     font-size: 1.1em;
     bottom: 0;
@@ -54,7 +54,7 @@
     border-bottom-right-radius: 4px;
     background-color: var(--panel);
     padding: 0 3px 3px;
-    font-family: monospace;
+    font-family: var(--font-display);
     font-size: 15px;
     cursor: default;
 }
