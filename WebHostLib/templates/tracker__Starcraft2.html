@@ -1,8 +1,10 @@
 {# Most of this file is generated using code from the ap-sc2-tracker-proto repo. #}
 <!DOCTYPE html>
-<html lang="en">
+<!-- The SC2 tracker's sprite atlas and glow overlays are built for a dark canvas, so it is always dark. -->
+<html lang="en" data-theme="dark">
 <head>
   <title>{{ player_name }}&apos;s Tracker</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/globalStyles.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/sc2Tracker.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/sc2TrackerAtlas.css') }}">
   <script type="application/ecmascript" src="{{ url_for('static', filename='assets/sc2Tracker.js') }}"></script>

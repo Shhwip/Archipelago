@@ -243,11 +243,11 @@ html {
   font-size: 14px;
   border: 1px solid var(--border);
   border-radius: 3px;
-  background-color: #d3d3d3;
+  background-color: var(--panel);
   user-select: none;
 }
 #player-options .randomize-button:hover {
-  background-color: #c0c0c0;
+  background-color: var(--border);
   cursor: pointer;
 }
 #player-options .randomize-button label {
@@ -266,10 +266,11 @@ html {
   display: none;
 }
 #player-options .randomize-button:has(input[type=checkbox]:checked) {
-  background-color: #888888; /* checked (randomize on) */
+  background-color: var(--accent); /* checked (randomize on) */
+  color: var(--bg);
 }
 #player-options .randomize-button:has(input[type=checkbox]:checked):hover {
-  background-color: #777777;
+  background-color: var(--muted);
 }
 #player-options .randomize-button[data-tooltip]::after {
   left: unset;

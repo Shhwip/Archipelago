@@ -59,6 +59,12 @@ html{
     text-transform: uppercase;
 }
 
+#base-header-right #theme-toggle{
+    margin-right: 0;
+    font-size: 26px;
+    line-height: 40px;
+}
+
 #base-header a:hover{
     color: var(--accent);
     font-weight: 500;

@@ -83,6 +83,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ player_name }}&apos;s Tracker</title>
+    <script>
+        /* Apply the saved theme before first paint to avoid a flash. */
+        (function () {
+            try {
+                var saved = localStorage.getItem("theme");
+                if (saved === "dark" || saved === "light") {
+                    document.documentElement.setAttribute("data-theme", saved);
+                }
+            } catch (e) { /* localStorage unavailable — fall back to OS preference */ }
+        })();
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/globalStyles.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/tracker__ALinkToThePast.css') }}">
 </head>
 

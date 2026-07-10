@@ -3,12 +3,12 @@
     width: 440px;
     box-sizing: border-box;
     font-family: var(--font-body);
-    border: 2px solid black;
+    border: 2px solid var(--heading);
     border-radius: 4px;
     resize: both;
 
     background-color: var(--panel);
-    color: white;
+    color: var(--text);
 }
 
 .hidden {
@@ -127,7 +127,7 @@
 }
 
 .regions-list .location-rows {
-    border-top: 1px solid white;
+    border-top: 1px solid var(--border);
     display: grid;
     grid-template-columns: auto 32px;
     font-weight: 300;

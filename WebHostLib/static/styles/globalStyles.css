@@ -11,6 +11,37 @@
     --header-text: #ffffff;
     --font-body: "Inter", system-ui, sans-serif;
     --font-display: "JetBrains Mono", ui-monospace, monospace;
+    color-scheme: light;
+}
+
+/* Dark theme: same grayscale system, inverted. Applied when the user picks dark
+   explicitly (data-theme) or, absent a choice, when the OS prefers dark. */
+:root[data-theme="dark"]{
+    --bg: #141414;
+    --text: #e6e6e6;
+    --heading: #ffffff;
+    --muted: #9a9a9a;
+    --accent: #b0b0b0;
+    --border: #333333;
+    --panel: #1e1e1e;
+    --header-bg: #000000;
+    --header-text: #ffffff;
+    color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+        --bg: #141414;
+        --text: #e6e6e6;
+        --heading: #ffffff;
+        --muted: #9a9a9a;
+        --accent: #b0b0b0;
+        --border: #333333;
+        --panel: #1e1e1e;
+        --header-bg: #000000;
+        --header-text: #ffffff;
+        color-scheme: dark;
+    }
 }
 
 @font-face{

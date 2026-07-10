@@ -57,7 +57,7 @@ a{
 }
 .section-title{
   position: relative;
-  border-bottom: 3px solid black;
+  border-bottom: 3px solid var(--border);
   /* Prevent text selection */
   user-select: none;
   -webkit-user-select: none;
