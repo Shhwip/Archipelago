@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from BaseClasses import Location
 
-from . import items
+from . import items, regions
 
 if TYPE_CHECKING:
     from .world import BitburnerWorld
@@ -167,10 +167,158 @@ BACKDOOR_LOCATIONS = [
     "Backdoor w0r1d_d43m0n",
 ]
 
+# Faction membership, for the factions whose join is not already an achievement check.
+#
+# Seven factions -- CyberSec, NiteSec, The Black Hand, BitRunners, Daedalus, The Covenant and the
+# Illuminati -- are omitted here because joining them is already an achievement above, and adding
+# them again would mean two locations for one action.
+FACTION_LOCATIONS = [
+    "Join ECorp",
+    "Join MegaCorp",
+    "Join Bachman & Associates",
+    "Join Blade Industries",
+    "Join NWO",
+    "Join Clarke Incorporated",
+    "Join OmniTek Incorporated",
+    "Join Four Sigma",
+    "Join KuaiGong International",
+    "Join Fulcrum Secret Technologies",
+    "Join Aevum",
+    "Join Chongqing",
+    "Join Ishima",
+    "Join New Tokyo",
+    "Join Sector-12",
+    "Join Volhaven",
+    "Join Speakers for the Dead",
+    "Join The Dark Army",
+    "Join The Syndicate",
+    "Join Silhouette",
+    "Join Tetrads",
+    "Join Slum Snakes",
+    "Join Netburners",
+    "Join Tian Di Hui",
+    "Join Bladeburners",
+    "Join Church of the Machine God",
+    "Join Shadows of Anarchy",
+]
+
 # IMPORTANT: As with items, IDs come from this order and must stay stable once seeds exist.
-# Only ever append.
+# Appended after the backdoors rather than interleaved, so earlier ids keep their values.
 LOCATION_NAME_TO_ID = {
-    name: items.BASE_ID + index for index, name in enumerate([*ACHIEVEMENT_LOCATIONS, *BACKDOOR_LOCATIONS])
+    name: items.BASE_ID + index
+    for index, name in enumerate([*ACHIEVEMENT_LOCATIONS, *BACKDOOR_LOCATIONS, *FACTION_LOCATIONS])
+}
+
+# Which server each backdoor check belongs to, and how many ports that server needs opened. This is
+# what regions.py uses to sort the backdoors into port tiers.
+BACKDOOR_PORT_REQUIREMENT = {
+    "Backdoor n00dles": 0,
+    "Backdoor foodnstuff": 0,
+    "Backdoor sigma-cosmetics": 0,
+    "Backdoor joesguns": 0,
+    "Backdoor nectar-net": 0,
+    "Backdoor hong-fang-tea": 0,
+    "Backdoor harakiri-sushi": 0,
+    "Backdoor zer0": 1,
+    "Backdoor neo-net": 1,
+    "Backdoor max-hardware": 1,
+    "Backdoor iron-gym": 1,
+    "Backdoor CSEC": 1,
+    "Backdoor the-hub": 2,
+    "Backdoor johnson-ortho": 2,
+    "Backdoor silver-helix": 2,
+    "Backdoor phantasy": 2,
+    "Backdoor omega-net": 2,
+    "Backdoor crush-fitness": 2,
+    "Backdoor avmnite-02h": 2,
+    "Backdoor rho-construction": 3,
+    "Backdoor rothman-uni": 3,
+    "Backdoor summit-uni": 3,
+    "Backdoor catalyst": 3,
+    "Backdoor computek": 3,
+    "Backdoor netlink": 3,
+    "Backdoor millenium-fitness": 3,
+    "Backdoor I.I.I.I": 3,
+    "Backdoor univ-energy": 4,
+    "Backdoor zb-def": 4,
+    "Backdoor applied-energetics": 4,
+    "Backdoor global-pharm": 4,
+    "Backdoor nova-med": 4,
+    "Backdoor unitalife": 4,
+    "Backdoor lexo-corp": 4,
+    "Backdoor alpha-ent": 4,
+    "Backdoor aevum-police": 4,
+    "Backdoor syscore": 4,
+    "Backdoor snap-fitness": 4,
+    "Backdoor run4theh111z": 4,
+    "Backdoor .": 4,
+    "Backdoor ecorp": 5,
+    "Backdoor megacorp": 5,
+    "Backdoor b-and-a": 5,
+    "Backdoor blade": 5,
+    "Backdoor nwo": 5,
+    "Backdoor clarkinc": 5,
+    "Backdoor omnitek": 5,
+    "Backdoor 4sigma": 5,
+    "Backdoor kuai-gong": 5,
+    "Backdoor fulcrumtech": 5,
+    "Backdoor fulcrumassets": 5,
+    "Backdoor stormtech": 5,
+    "Backdoor defcomm": 5,
+    "Backdoor infocomm": 5,
+    "Backdoor helios": 5,
+    "Backdoor vitalife": 5,
+    "Backdoor icarus": 5,
+    "Backdoor titan-labs": 5,
+    "Backdoor microdyne": 5,
+    "Backdoor taiyang-digital": 5,
+    "Backdoor galactic-cyber": 5,
+    "Backdoor aerocorp": 5,
+    "Backdoor omnia": 5,
+    "Backdoor solaris": 5,
+    "Backdoor deltaone": 5,
+    "Backdoor zeus-med": 5,
+    "Backdoor zb-institute": 5,
+    "Backdoor powerhouse-fitness": 5,
+    "Backdoor The-Cave": 5,
+    "Backdoor w0r1d_d43m0n": 5,
+}
+
+# Locations that only exist when their content option is enabled. A BitNode 1 run cannot reach any
+# of this, so including it unconditionally would mean checks the player can never send.
+CONTENT_LOCATIONS = {
+    "gangs": [
+        "Form a Gang",
+        "Recruit All Gang Members",
+        "Control All Gang Territory",
+        "Train a Gang Member to 10,000 in a Skill",
+    ],
+    "corporations": [
+        "Create a Corporation",
+        "Lower Corporation Tribute by Lobbying",
+        "Reach a 1000x Division Production Multiplier",
+        "Employ 3000 in a Division",
+        "Expand Into Real Estate",
+    ],
+    "bladeburner": [
+        "Join the Bladeburner Division",
+        "Max Out Bladeburner Overclock",
+        "Bank 100,000 Bladeburner Skill Points",
+        "Join Bladeburners",
+    ],
+    "sleeves": [
+        "Acquire All 8 Sleeves",
+    ],
+    "hacknet_servers": [
+        "Purchase Your First Hacknet Server",
+        "Buy All Hacknet Servers",
+        "Maximize a Hacknet Server",
+        "Earn $1b From Hacknet Servers",
+        "Cap Your Hashes",
+    ],
+    "staneks_gift": [
+        "Join Church of the Machine God",
+    ],
 }
 
 # The event location/item pair that represents beating the world.
@@ -189,10 +337,29 @@ class BitburnerLocation(Location):
     game = "Bitburner"
 
 
-def create_all_locations(world: BitburnerWorld) -> None:
-    bitnode = world.get_region("BitNode")
+def get_disabled_locations(world: BitburnerWorld) -> set[str]:
+    """Locations left out of this seed because their content option is off."""
+    disabled: set[str] = set()
 
-    bitnode.add_locations(LOCATION_NAME_TO_ID, BitburnerLocation)
+    for option_name, location_names in CONTENT_LOCATIONS.items():
+        if not getattr(world.options, option_name):
+            disabled.update(location_names)
+
+    return disabled
+
+
+def create_all_locations(world: BitburnerWorld) -> None:
+    disabled = get_disabled_locations(world)
+    bitnode = world.get_region(regions.ORIGIN_REGION)
+
+    # Achievements and faction joins have no port requirement, so they sit in the origin region.
+    ungated = [name for name in (*ACHIEVEMENT_LOCATIONS, *FACTION_LOCATIONS) if name not in disabled]
+    bitnode.add_locations({name: LOCATION_NAME_TO_ID[name] for name in ungated}, BitburnerLocation)
+
+    # Backdoors go to the region for the number of ports their server needs.
+    for name in BACKDOOR_LOCATIONS:
+        region = world.get_region(regions.region_for_ports(BACKDOOR_PORT_REQUIREMENT[name]))
+        region.add_locations({name: LOCATION_NAME_TO_ID[name]}, BitburnerLocation)
 
     bitnode.add_event(
         VICTORY_LOCATION,

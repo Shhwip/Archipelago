@@ -1,7 +1,9 @@
-from ..items import AUGMENTATION_ITEMS, BASE_ID, FILLER_ITEM, ITEM_NAME_TO_ID
+from ..items import AUGMENTATION_ITEMS, BASE_ID, FILLER_ITEM, ITEM_NAME_TO_ID, PROGRAM_ITEMS
 from ..locations import (
     ACHIEVEMENT_LOCATIONS,
     BACKDOOR_LOCATIONS,
+    BACKDOOR_PORT_REQUIREMENT,
+    FACTION_LOCATIONS,
     GOAL_ACHIEVEMENT,
     LOCATION_NAME_TO_ID,
     VICTORY_LOCATION,
@@ -17,7 +19,9 @@ from .bases import BitburnerTestBase
 # existing entry's position is not, and breaks seeds that already exist.
 EXPECTED_ACHIEVEMENT_COUNT = 68
 EXPECTED_BACKDOOR_COUNT = 70
+EXPECTED_FACTION_COUNT = 27
 EXPECTED_AUGMENTATION_COUNT = 136
+EXPECTED_PROGRAM_COUNT = 5
 
 
 class TestClientContract(BitburnerTestBase):
@@ -28,16 +32,28 @@ class TestClientContract(BitburnerTestBase):
     def test_list_sizes(self) -> None:
         self.assertEqual(len(ACHIEVEMENT_LOCATIONS), EXPECTED_ACHIEVEMENT_COUNT)
         self.assertEqual(len(BACKDOOR_LOCATIONS), EXPECTED_BACKDOOR_COUNT)
+        self.assertEqual(len(FACTION_LOCATIONS), EXPECTED_FACTION_COUNT)
         self.assertEqual(len(AUGMENTATION_ITEMS), EXPECTED_AUGMENTATION_COUNT)
+        self.assertEqual(len(PROGRAM_ITEMS), EXPECTED_PROGRAM_COUNT)
 
     def test_names_are_unique(self) -> None:
-        # A duplicate name would silently collapse two entries into one ID.
+        # A duplicate name would silently collapse two entries into one ID. This is the check that
+        # catches a faction join being added when an achievement already covers it.
         with self.subTest("locations"):
-            self.assertEqual(len(LOCATION_NAME_TO_ID), len(ACHIEVEMENT_LOCATIONS) + len(BACKDOOR_LOCATIONS))
+            expected = EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT + EXPECTED_FACTION_COUNT
+            self.assertEqual(len(LOCATION_NAME_TO_ID), expected)
 
         with self.subTest("items"):
-            self.assertEqual(len(ITEM_NAME_TO_ID), len(AUGMENTATION_ITEMS) + 1)
+            self.assertEqual(len(ITEM_NAME_TO_ID), EXPECTED_AUGMENTATION_COUNT + EXPECTED_PROGRAM_COUNT + 1)
             self.assertNotIn(FILLER_ITEM, AUGMENTATION_ITEMS)
+
+    def test_every_backdoor_has_a_port_requirement(self) -> None:
+        # regions.py sorts backdoors into tiers by this table, so a missing entry would KeyError
+        # during generation rather than fail here.
+        self.assertEqual(set(BACKDOOR_PORT_REQUIREMENT), set(BACKDOOR_LOCATIONS))
+        for name, ports in BACKDOOR_PORT_REQUIREMENT.items():
+            with self.subTest(name):
+                self.assertIn(ports, range(0, 6))
 
     def test_ids_are_contiguous_from_base(self) -> None:
         # IDs come from list order, so this pins the ordering as a whole.
@@ -58,6 +74,8 @@ class TestClientContract(BitburnerTestBase):
 
         self.assertEqual(ITEM_NAME_TO_ID["Augmented Targeting I"], BASE_ID)
         self.assertEqual(ITEM_NAME_TO_ID[FILLER_ITEM], BASE_ID + EXPECTED_AUGMENTATION_COUNT)
+        # Programs were appended after the filler precisely so the ids above did not move.
+        self.assertEqual(ITEM_NAME_TO_ID["BruteSSH.exe"], BASE_ID + EXPECTED_AUGMENTATION_COUNT + 1)
 
     def test_source_genesis_is_both_a_check_and_the_goal(self) -> None:
         # SF1.1 is now a real check as well as the goal trigger, so finishing the run sends a check

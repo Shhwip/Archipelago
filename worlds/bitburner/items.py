@@ -167,11 +167,59 @@ AUGMENTATION_ITEMS = [
 # Bitburner augmentation that is genuinely repeatable, gaining a level on each grant.
 FILLER_ITEM = "NeuroFlux Governor"
 
-ITEM_NAME_TO_ID = {name: BASE_ID + index for index, name in enumerate([*AUGMENTATION_ITEMS, FILLER_ITEM])}
+# The five port-opener programs. These are the backbone of this world's logic: opening ports is
+# what NUKE needs to root a server, and rooting is what backdooring needs, so they gate 63 of the
+# 70 backdoor checks in a clean staircase.
+#
+# They only work as gates because the client stops you creating them in the terminal or buying them
+# from the darkweb. Without that, any rule referencing them would be vacuous.
+PROGRAM_ITEMS = [
+    "BruteSSH.exe",
+    "FTPCrack.exe",
+    "relaySMTP.exe",
+    "HTTPWorm.exe",
+    "SQLInject.exe",
+]
+
+# Augmentations only obtainable through content a BitNode 1 run cannot reach. Each set is added to
+# the pool only when its matching option is enabled, alongside that content's locations, so that
+# turning a feature on or off keeps items and locations in step.
+BLADEBURNER_AUGMENTATIONS = [
+    "EsperTech Bladeburner Eyewear",
+    "EMS-4 Recombination",
+    "ORION-MKIV Shoulder",
+    "Hyperion Plasma Cannon V1",
+    "Hyperion Plasma Cannon V2",
+    "GOLEM Serum",
+    "Vangelis Virus",
+    "Vangelis Virus 3.0",
+    "I.N.T.E.R.L.I.N.K.E.D",
+    "Blade's Runners",
+    "BLADE-51b Tesla Armor",
+    "BLADE-51b Tesla Armor: Power Cells Upgrade",
+    "BLADE-51b Tesla Armor: Energy Shielding Upgrade",
+    "BLADE-51b Tesla Armor: Unibeam Upgrade",
+    "BLADE-51b Tesla Armor: Omnibeam Upgrade",
+    "BLADE-51b Tesla Armor: IPU Upgrade",
+    "The Blade's Simulacrum",
+]
+
+STANEK_AUGMENTATIONS = [
+    "Stanek's Gift - Genesis",
+    "Stanek's Gift - Awakening",
+    "Stanek's Gift - Serenity",
+]
+
+# Appended after the filler rather than inserted, so that every id assigned before programs existed
+# keeps its value.
+ITEM_NAME_TO_ID = {
+    name: BASE_ID + index for index, name in enumerate([*AUGMENTATION_ITEMS, FILLER_ITEM, *PROGRAM_ITEMS])
+}
 
 # Item groups let players write "!hint augmentations" and let other worlds reference our items.
 ITEM_NAME_GROUPS = {
     "Augmentations": {*AUGMENTATION_ITEMS, FILLER_ITEM},
+    "Programs": {*PROGRAM_ITEMS},
 }
 
 
@@ -183,17 +231,31 @@ def get_filler_item_name(world: BitburnerWorld) -> str:
     return FILLER_ITEM
 
 
+def get_enabled_augmentations(world: BitburnerWorld) -> list[str]:
+    """The augmentations in the pool, given which content the player enabled."""
+    excluded: set[str] = set()
+    if not world.options.bladeburner:
+        excluded.update(BLADEBURNER_AUGMENTATIONS)
+    if not world.options.staneks_gift:
+        excluded.update(STANEK_AUGMENTATIONS)
+
+    return [name for name in AUGMENTATION_ITEMS if name not in excluded]
+
+
 def create_item_with_correct_classification(world: BitburnerWorld, name: str) -> BitburnerItem:
-    # No rule references any specific augmentation yet, so nothing has to be progression for the
-    # generator to be correct. They are marked progression anyway so that fill spreads them across
-    # spheres and progression balancing treats them as worth reaching, rather than dumping the whole
-    # pool into late locations. Revisit once real logic exists.
-    classification = ItemClassification.filler if name == FILLER_ITEM else ItemClassification.progression
-    return BitburnerItem(name, classification, ITEM_NAME_TO_ID[name], world.player)
+    if name == FILLER_ITEM:
+        return BitburnerItem(name, ItemClassification.filler, ITEM_NAME_TO_ID[name], world.player)
+
+    # Programs are named by the backdoor entrance rules, so they must be progression.
+    # Augmentations are not referenced by any rule yet. They are marked progression anyway so that
+    # fill spreads them across spheres rather than dumping the pool into late locations; once
+    # augmentations actually gate something, this becomes load-bearing rather than a hint.
+    return BitburnerItem(name, ItemClassification.progression, ITEM_NAME_TO_ID[name], world.player)
 
 
 def create_all_items(world: BitburnerWorld) -> None:
-    itempool: list[Item] = [world.create_item(name) for name in AUGMENTATION_ITEMS]
+    itempool: list[Item] = [world.create_item(name) for name in PROGRAM_ITEMS]
+    itempool += [world.create_item(name) for name in get_enabled_augmentations(world)]
 
     # get_unfilled_locations is what we want rather than get_locations: the victory event is a
     # location too, but it already has its item and must not be counted here.

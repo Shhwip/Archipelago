@@ -2,10 +2,14 @@
 
 ## What does randomization do to this game?
 
-Augmentations are removed from the shops and turned into Archipelago items. You receive them from
-the multiworld instead of buying them, and they are applied immediately, without an install/reset.
+Augmentations become Archipelago items. You receive them from the multiworld instead of buying
+them, and they are applied immediately, without an install or reset.
 
-Earning certain Bitburner achievements sends location checks to the multiworld.
+The five port-opener programs also become items, and you can no longer write them yourself or buy
+them from the darknet. Since NUKE needs open ports to root a server, and rooting is what lets you
+backdoor it, which programs you have found decides how much of the network you can reach.
+
+Earning achievements, joining factions, and installing backdoors all send checks.
 
 ## What is the goal?
 
@@ -26,17 +30,26 @@ Archipelago server, not shown in Bitburner itself.
 
 ## What are the checks?
 
-138 of them, from two sources:
+Up to 165, from three sources:
 
 - **68 achievements.** Everything except the secret achievements, the source file achievements for
   other BitNodes, and the challenge-run achievements.
 - **70 server backdoors**, one per server in Bitburner's fixed server list.
+- **27 faction joins**, for the factions whose join is not already an achievement.
+
+A default seed has 145 of those. The rest belong to content options that are off unless you turn
+them on.
+
+## Content options
+
+Gangs, corporations, Bladeburner, Sleeves, hacknet servers and Stanek's Gift each need a source file
+from another BitNode, so a BitNode 1 run cannot reach any of them. Each has an option, off by
+default, that adds its checks and any augmentations exclusive to it.
+
+Turn one on only if your run can actually reach that content.
 
 ## Current scope
 
-The item pool is every augmentation in the game — 136 of them, plus NeuroFlux Governor as filler.
-
-There is no logic yet. Every check sits in one region with nothing gating it, and the generator will
-happily place an item behind a check you cannot reach. Some achievements in the list need BitNode
-content a BitNode 1 run never sees, such as gangs, corporations, Bladeburner and Sleeves. Until
-logic is added, treat those as optional and expect some checks to be out of reach in a given run.
+Logic covers open ports, which is what gates the backdoors. It does not yet cover required hacking
+skill, money, or faction reputation, so a check can be in logic while still being a long grind
+away.

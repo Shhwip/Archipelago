@@ -7,17 +7,36 @@ from BaseClasses import Region
 if TYPE_CHECKING:
     from .world import BitburnerWorld
 
-# A Bitburner run takes place inside a single BitNode, and this trivial world has no traversal logic
-# at all — every check is reachable from the moment the save exists. So there is exactly one region,
-# and it is the origin region (see BitburnerWorld.origin_region_name).
+# Regions model the one thing in Bitburner that gates access discretely: open ports.
 #
-# Real logic — gating checks behind hacking skill, money, programs, or faction access — will mean
-# splitting this into several regions with entrance rules between them.
+# Backdooring a server needs root, root needs NUKE, and NUKE needs as many open ports as the server
+# demands. Each port-opener program opens exactly one port, so a server needing three ports needs
+# any three of the five programs. That maps directly onto a region per port requirement.
+#
+# Servers needing no ports live in the origin region, since nothing gates them.
+#
+# The other axis, required hacking skill, is deliberately not modelled. It is grindable rather than
+# unlockable, so it is soft logic, and nothing in the item pool represents it yet.
 ORIGIN_REGION = "BitNode"
+
+MAX_PORTS = 5
+
+
+def region_for_ports(ports: int) -> str:
+    return ORIGIN_REGION if ports == 0 else f"Port Tier {ports}"
+
+
+def entrance_for_ports(ports: int) -> str:
+    return f"Open {ports} Ports"
 
 
 def create_and_connect_regions(world: BitburnerWorld) -> None:
     bitnode = Region(ORIGIN_REGION, world.player, world.multiworld)
     world.multiworld.regions.append(bitnode)
 
-    # With only the origin region there is nothing to connect yet.
+    # Each tier hangs directly off the origin rather than off the tier below it. Needing three ports
+    # does not mean passing through the two-port servers, it just means holding three programs.
+    for ports in range(1, MAX_PORTS + 1):
+        tier = Region(region_for_ports(ports), world.player, world.multiworld)
+        world.multiworld.regions.append(tier)
+        bitnode.connect(tier, entrance_for_ports(ports))

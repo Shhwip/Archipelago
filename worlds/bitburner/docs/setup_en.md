@@ -13,6 +13,15 @@ by hand. The only Bitburner-specific option is `goal`:
 ```yaml
 Bitburner:
   goal: source_genesis  # or: any_augmentation
+
+  # Content that needs a source file from another BitNode. Leave these off for a BitNode 1 run,
+  # or you will have checks you cannot reach.
+  gangs: false
+  corporations: false
+  bladeburner: false
+  sleeves: false
+  hacknet_servers: false
+  staneks_gift: false
 ```
 
 `source_genesis` requires destroying BitNode 1 to earn the SF1.1 achievement. Use
@@ -33,9 +42,12 @@ disconnected the next time it connects.
 
 ## Checks
 
-There are 138 checks: 68 Bitburner achievements, and a backdoor on each of the 70 servers in the
-game's fixed server list. Earning an achievement or installing a backdoor sends its check
-automatically.
+Checks come from Bitburner achievements, backdoors on each of the game's fixed servers, and joining
+factions. Earning, backdooring or joining sends the check automatically.
+
+You cannot write the port-opener programs or buy them from the darknet — they arrive as items. A
+server needs as many open ports as it demands before you can NUKE and then backdoor it, so early on
+you will only be able to reach the servers requiring no ports.
 
 You do not need to be connected at the time. The client sweeps game state every few seconds and
 records what you have satisfied into your save, then sends anything outstanding the next time it
