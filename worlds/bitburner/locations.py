@@ -229,6 +229,31 @@ DARKWEB_PURCHASE_LOCATIONS = [
     "Purchase Formulas.exe",
 ]
 
+# Writing a program yourself, the other half of the acquisition story.
+#
+# Only the 10 programs that are both creatable and purchasable are here, which is what keeps every
+# one of these reachable:
+#
+# - NUKE.exe and b1t_flum3.exe are creatable but not sold. NUKE is owned from the start, and
+#   b1t_flum3 needs knowAboutBitverse(), which is false for an entire first BitNode 1 run. Either
+#   would be a location a player could not sensibly reach.
+# - DarkscapeNavigator.exe is sold but has no create recipe at all.
+#
+# As with a darkweb purchase, this is the *creation*, not owning the file, so the client records it
+# where the work finishes rather than deriving it from ownership.
+PROGRAM_CREATION_LOCATIONS = [
+    "Create BruteSSH.exe",
+    "Create FTPCrack.exe",
+    "Create relaySMTP.exe",
+    "Create HTTPWorm.exe",
+    "Create SQLInject.exe",
+    "Create ServerProfiler.exe",
+    "Create DeepscanV1.exe",
+    "Create DeepscanV2.exe",
+    "Create AutoLink.exe",
+    "Create Formulas.exe",
+]
+
 # IMPORTANT: As with items, IDs come from this order and must stay stable once seeds exist.
 # Appended after the backdoors rather than interleaved, so earlier ids keep their values.
 LOCATION_NAME_TO_ID = {
@@ -239,6 +264,7 @@ LOCATION_NAME_TO_ID = {
             *BACKDOOR_LOCATIONS,
             *FACTION_LOCATIONS,
             *DARKWEB_PURCHASE_LOCATIONS,
+            *PROGRAM_CREATION_LOCATIONS,
         ]
     )
 }
@@ -386,11 +412,17 @@ def create_all_locations(world: BitburnerWorld) -> None:
     disabled = get_disabled_locations(world)
     bitnode = world.get_region(regions.ORIGIN_REGION)
 
-    # Achievements, faction joins and darkweb purchases have no port requirement, so they sit in the
-    # origin region. The purchases need the TOR router and money, neither of which is modelled.
+    # Achievements, faction joins, darkweb purchases and program creation have no port requirement,
+    # so they sit in the origin region. Purchases need the TOR router and money, and creation needs
+    # hacking skill, none of which is modelled.
     ungated = [
         name
-        for name in (*ACHIEVEMENT_LOCATIONS, *FACTION_LOCATIONS, *DARKWEB_PURCHASE_LOCATIONS)
+        for name in (
+            *ACHIEVEMENT_LOCATIONS,
+            *FACTION_LOCATIONS,
+            *DARKWEB_PURCHASE_LOCATIONS,
+            *PROGRAM_CREATION_LOCATIONS,
+        )
         if name not in disabled
     ]
     bitnode.add_locations({name: LOCATION_NAME_TO_ID[name] for name in ungated}, BitburnerLocation)

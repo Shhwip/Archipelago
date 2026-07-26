@@ -14,6 +14,7 @@ from ..locations import (
     CONTENT_LOCATIONS,
     DARKWEB_PURCHASE_LOCATIONS,
     FACTION_LOCATIONS,
+    PROGRAM_CREATION_LOCATIONS,
 )
 from .bases import BitburnerTestBase
 
@@ -103,6 +104,7 @@ class TestItemBudget(unittest.TestCase):
                 + len(BACKDOOR_LOCATIONS)
                 + len(FACTION_LOCATIONS)
                 + len(DARKWEB_PURCHASE_LOCATIONS)
+                + len(PROGRAM_CREATION_LOCATIONS)
             )
             for toggle, names in CONTENT_LOCATIONS.items():
                 if toggle not in enabled:

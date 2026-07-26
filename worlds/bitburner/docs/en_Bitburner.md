@@ -29,21 +29,28 @@ Archipelago server, not shown in Bitburner itself.
 
 ## What are the checks?
 
-Up to 176, from four sources:
+Up to 186, from five sources:
 
 - **68 achievements.** Everything except the secret achievements, the source file achievements for
   other BitNodes, and the challenge-run achievements.
 - **70 server backdoors**, one per server in Bitburner's fixed server list.
 - **27 faction joins**, for the factions whose join is not already an achievement.
 - **11 darkweb purchases**, one per program the darkweb sells. These need the TOR router.
+- **10 program creations**, for the programs you can write yourself _and_ buy from the darkweb.
 
-A default seed has 156 of those. The rest belong to content options that are off unless you turn
+A default seed has 166 of those. The rest belong to content options that are off unless you turn
 them on.
 
-A darkweb purchase is the *purchase*, not owning the program — so being given a program by
-Archipelago or by an augmentation does not send it. If you already have a program and want its check,
-delete it with `rm <program>.exe` and buy it. That is also the only way to get the
-`DarkscapeNavigator.exe` check if you picked it up from the Shadowed Walkway.
+Buying and writing a program are separate checks, and both are the *act*, not owning the file — so
+being given a program by Archipelago or by an augmentation sends neither. If you already have a
+program and want its checks, delete it with `rm <program>.exe`, then buy it and write it. That is
+also the only way to get the `DarkscapeNavigator.exe` purchase check if you picked it up from the
+Shadowed Walkway.
+
+`NUKE.exe` and `b1t_flum3.exe` have no creation check, even though you can write them. NUKE you
+already own, and b1t_flum3 cannot be written until you know about the BitVerse, which does not happen
+in a first BitNode 1 run — either would be a check you could not reach. `DarkscapeNavigator.exe` has
+no creation check because it has no recipe.
 
 ## Content options
 

@@ -7,6 +7,7 @@ from ..locations import (
     FACTION_LOCATIONS,
     GOAL_ACHIEVEMENT,
     LOCATION_NAME_TO_ID,
+    PROGRAM_CREATION_LOCATIONS,
     VICTORY_LOCATION,
 )
 from .bases import BitburnerTestBase
@@ -22,12 +23,14 @@ EXPECTED_ACHIEVEMENT_COUNT = 68
 EXPECTED_BACKDOOR_COUNT = 70
 EXPECTED_FACTION_COUNT = 27
 EXPECTED_DARKWEB_COUNT = 11
+EXPECTED_CREATION_COUNT = 10
 EXPECTED_AUGMENTATION_COUNT = 136
 EXPECTED_PROGRAM_COUNT = 5
 
 # Where each block of locations starts, given the append-only ordering above.
 FACTION_BLOCK_START = EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT
 DARKWEB_BLOCK_START = FACTION_BLOCK_START + EXPECTED_FACTION_COUNT
+CREATION_BLOCK_START = DARKWEB_BLOCK_START + EXPECTED_DARKWEB_COUNT
 
 
 class TestClientContract(BitburnerTestBase):
@@ -40,14 +43,27 @@ class TestClientContract(BitburnerTestBase):
         self.assertEqual(len(BACKDOOR_LOCATIONS), EXPECTED_BACKDOOR_COUNT)
         self.assertEqual(len(FACTION_LOCATIONS), EXPECTED_FACTION_COUNT)
         self.assertEqual(len(DARKWEB_PURCHASE_LOCATIONS), EXPECTED_DARKWEB_COUNT)
+        self.assertEqual(len(PROGRAM_CREATION_LOCATIONS), EXPECTED_CREATION_COUNT)
         self.assertEqual(len(AUGMENTATION_ITEMS), EXPECTED_AUGMENTATION_COUNT)
         self.assertEqual(len(PROGRAM_ITEMS), EXPECTED_PROGRAM_COUNT)
+
+    def test_every_creatable_program_is_also_purchasable(self) -> None:
+        # The reachability argument for this block. A program that can only be created is one whose
+        # location a player may be unable to reach: NUKE.exe is owned from the start and b1t_flum3
+        # needs knowAboutBitverse(), false for a whole first BitNode 1 run. Restricting creation
+        # locations to programs the darkweb also sells is what keeps every one of them obtainable.
+        created = {name.removeprefix("Create ") for name in PROGRAM_CREATION_LOCATIONS}
+        purchasable = {name.removeprefix("Purchase ") for name in DARKWEB_PURCHASE_LOCATIONS}
+
+        self.assertLess(created, purchasable)
+        # DarkscapeNavigator.exe is the one sold program with no create recipe.
+        self.assertEqual(purchasable - created, {"DarkscapeNavigator.exe"})
 
     def test_names_are_unique(self) -> None:
         # A duplicate name would silently collapse two entries into one ID. This is the check that
         # catches a faction join being added when an achievement already covers it.
         with self.subTest("locations"):
-            self.assertEqual(len(LOCATION_NAME_TO_ID), DARKWEB_BLOCK_START + EXPECTED_DARKWEB_COUNT)
+            self.assertEqual(len(LOCATION_NAME_TO_ID), CREATION_BLOCK_START + EXPECTED_CREATION_COUNT)
 
         with self.subTest("items"):
             self.assertEqual(len(ITEM_NAME_TO_ID), EXPECTED_AUGMENTATION_COUNT + EXPECTED_PROGRAM_COUNT + 1)
@@ -78,6 +94,9 @@ class TestClientContract(BitburnerTestBase):
             # Appended after the factions, so the ids above did not move.
             "Purchase BruteSSH.exe": BASE_ID + DARKWEB_BLOCK_START,
             "Purchase Formulas.exe": BASE_ID + DARKWEB_BLOCK_START + EXPECTED_DARKWEB_COUNT - 1,
+            # Appended after the purchases, so all of the above did not move.
+            "Create BruteSSH.exe": BASE_ID + CREATION_BLOCK_START,
+            "Create Formulas.exe": BASE_ID + CREATION_BLOCK_START + EXPECTED_CREATION_COUNT - 1,
         }
         for name, expected_id in anchors.items():
             with self.subTest(name):
