@@ -24,7 +24,19 @@ All of them. Every augmentation in the pool may be placed in any world in the mu
 Checks are sent when you earn the corresponding achievement. The item you found is reported by the
 Archipelago server, not shown in Bitburner itself.
 
+## What are the checks?
+
+138 of them, from two sources:
+
+- **68 achievements.** Everything except the secret achievements, the source file achievements for
+  other BitNodes, and the challenge-run achievements.
+- **70 server backdoors**, one per server in Bitburner's fixed server list.
+
 ## Current scope
 
-This is an early version of the world. It contains six checks — all of them achievements reachable
-within the first few minutes of a fresh save — and six augmentations, with no logic between them.
+The item pool is every augmentation in the game — 136 of them, plus NeuroFlux Governor as filler.
+
+There is no logic yet. Every check sits in one region with nothing gating it, and the generator will
+happily place an item behind a check you cannot reach. Some achievements in the list need BitNode
+content a BitNode 1 run never sees, such as gangs, corporations, Bladeburner and Sleeves. Until
+logic is added, treat those as optional and expect some checks to be out of reach in a given run.

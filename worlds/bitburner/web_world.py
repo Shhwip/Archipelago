@@ -15,7 +15,7 @@ class BitburnerWebWorld(WebWorld):
         "English",
         "setup_en.md",
         "setup/en",
-        ["echo"],
+        ["shhwip"],
     )
 
     tutorials = [setup_en]

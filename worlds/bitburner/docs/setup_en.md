@@ -33,13 +33,12 @@ disconnected the next time it connects.
 
 ## Checks
 
-All six checks are Bitburner achievements:
+There are 138 checks: 68 Bitburner achievements, and a backdoor on each of the 70 servers in the
+game's fixed server list. Earning an achievement or installing a backdoor sends its check
+automatically.
 
-| Check | How to earn it |
-|---|---|
-| Purchase Your First Hacknet Node | Buy a node from the Hacknet menu |
-| Purchase the TOR Router | Buy the TOR router at the Sector-12 Alpha Enterprises |
-| Work Out at a Gym | Begin any gym workout |
-| Travel to Another City | Travel out of Sector-12 |
-| Get Hospitalized | Take enough damage to be hospitalized |
-| Write a .js Script | Create a `.js` script on your home computer |
+You do not need to be connected at the time. The client sweeps game state every few seconds and
+records what you have satisfied into your save, then sends anything outstanding the next time it
+connects. This matters most for backdoors, which are wiped whenever you install augmentations —
+recording them as they happen is what stops a check earned offline from being lost at your next
+install.

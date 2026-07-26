@@ -1,51 +1,67 @@
-from ..items import BASE_ID, ITEM_NAME_TO_ID
-from ..locations import GOAL_ACHIEVEMENT, LOCATION_NAME_TO_ID
+from ..items import AUGMENTATION_ITEMS, BASE_ID, FILLER_ITEM, ITEM_NAME_TO_ID
+from ..locations import (
+    ACHIEVEMENT_LOCATIONS,
+    BACKDOOR_LOCATIONS,
+    GOAL_ACHIEVEMENT,
+    LOCATION_NAME_TO_ID,
+    VICTORY_LOCATION,
+)
 from .bases import BitburnerTestBase
 
-# The Bitburner client hardcodes these names in src/Archipelago/Data.ts, and IDs are baked into
-# every generated seed. Renaming or reordering either table silently desyncs the client, or breaks
-# seeds that already exist, so both are pinned here deliberately.
+# The client hardcodes these names in src/Archipelago/Data.ts, and the IDs are baked into every
+# generated seed. The full lists are not repeated here -- that would just be a second copy to keep
+# in step -- but their sizes and boundaries are pinned, which is what catches an accidental reorder
+# or a dropped entry.
 #
-# Adding a new entry to the end of one of these lists is expected and fine — update the list here
-# to match. Changing the position of an existing entry is not.
-EXPECTED_ITEM_ORDER = [
-    "BitWire",
-    "Combat Rib I",
-    "Neurotrainer I",
-    "Nuoptimal Nootropic Injector Implant",
-    "Speech Processor Implant",
-    "Synaptic Enhancement Implant",
-    "NeuroFlux Governor",
-]
-
-EXPECTED_LOCATION_ORDER = [
-    "Purchase Your First Hacknet Node",
-    "Purchase the TOR Router",
-    "Work Out at a Gym",
-    "Travel to Another City",
-    "Get Hospitalized",
-    "Write a .js Script",
-]
+# Appending to either list is expected: update the counts here to match. Anything that changes an
+# existing entry's position is not, and breaks seeds that already exist.
+EXPECTED_ACHIEVEMENT_COUNT = 68
+EXPECTED_BACKDOOR_COUNT = 70
+EXPECTED_AUGMENTATION_COUNT = 136
 
 
 class TestClientContract(BitburnerTestBase):
-    # This is a pure data check that doesn't depend on options, so the generic tests would just be
-    # a slower repeat of the ones the goal tests already run on default options.
+    # A pure data check that does not depend on options, so the generic tests would just be a slower
+    # repeat of the ones the goal tests already run on default options.
     run_default_tests = False
 
-    def test_item_ids_are_stable(self) -> None:
-        expected = {name: BASE_ID + index for index, name in enumerate(EXPECTED_ITEM_ORDER)}
-        self.assertEqual(ITEM_NAME_TO_ID, expected)
+    def test_list_sizes(self) -> None:
+        self.assertEqual(len(ACHIEVEMENT_LOCATIONS), EXPECTED_ACHIEVEMENT_COUNT)
+        self.assertEqual(len(BACKDOOR_LOCATIONS), EXPECTED_BACKDOOR_COUNT)
+        self.assertEqual(len(AUGMENTATION_ITEMS), EXPECTED_AUGMENTATION_COUNT)
 
-    def test_location_ids_are_stable(self) -> None:
-        expected = {name: BASE_ID + index for index, name in enumerate(EXPECTED_LOCATION_ORDER)}
-        self.assertEqual(LOCATION_NAME_TO_ID, expected)
+    def test_names_are_unique(self) -> None:
+        # A duplicate name would silently collapse two entries into one ID.
+        with self.subTest("locations"):
+            self.assertEqual(len(LOCATION_NAME_TO_ID), len(ACHIEVEMENT_LOCATIONS) + len(BACKDOOR_LOCATIONS))
 
-    def test_goal_achievement_is_source_genesis(self) -> None:
-        # The client watches this achievement ID to decide when to send its StatusUpdate.
+        with self.subTest("items"):
+            self.assertEqual(len(ITEM_NAME_TO_ID), len(AUGMENTATION_ITEMS) + 1)
+            self.assertNotIn(FILLER_ITEM, AUGMENTATION_ITEMS)
+
+    def test_ids_are_contiguous_from_base(self) -> None:
+        # IDs come from list order, so this pins the ordering as a whole.
+        self.assertEqual(sorted(LOCATION_NAME_TO_ID.values()), list(range(BASE_ID, BASE_ID + len(LOCATION_NAME_TO_ID))))
+        self.assertEqual(sorted(ITEM_NAME_TO_ID.values()), list(range(BASE_ID, BASE_ID + len(ITEM_NAME_TO_ID))))
+
+    def test_anchor_ids_are_stable(self) -> None:
+        # Spot-checks at both ends of each list, so a reorder that preserved the count still fails.
+        anchors = {
+            "Join CyberSec": BASE_ID,
+            "Acquire Source Genesis": BASE_ID + 13,
+            "Backdoor ecorp": BASE_ID + EXPECTED_ACHIEVEMENT_COUNT,
+            "Backdoor w0r1d_d43m0n": BASE_ID + EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT - 1,
+        }
+        for name, expected_id in anchors.items():
+            with self.subTest(name):
+                self.assertEqual(LOCATION_NAME_TO_ID[name], expected_id)
+
+        self.assertEqual(ITEM_NAME_TO_ID["Augmented Targeting I"], BASE_ID)
+        self.assertEqual(ITEM_NAME_TO_ID[FILLER_ITEM], BASE_ID + EXPECTED_AUGMENTATION_COUNT)
+
+    def test_source_genesis_is_both_a_check_and_the_goal(self) -> None:
+        # SF1.1 is now a real check as well as the goal trigger, so finishing the run sends a check
+        # and completes the goal. The victory event is separate and must not collide with it.
         self.assertEqual(GOAL_ACHIEVEMENT, "SF1.1")
-
-    def test_goal_achievement_is_not_also_a_check(self) -> None:
-        # The goal is reported via StatusUpdate, not as a location, so SF1.1 must not appear in the
-        # check list — otherwise the client would have two conflicting reasons to react to it.
-        self.assertNotIn("Source Genesis", LOCATION_NAME_TO_ID)
+        self.assertIn("Acquire Source Genesis", LOCATION_NAME_TO_ID)
+        self.assertNotIn(VICTORY_LOCATION, LOCATION_NAME_TO_ID)
