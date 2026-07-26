@@ -3,6 +3,7 @@ from ..locations import (
     ACHIEVEMENT_LOCATIONS,
     BACKDOOR_LOCATIONS,
     BACKDOOR_PORT_REQUIREMENT,
+    DARKWEB_PURCHASE_LOCATIONS,
     FACTION_LOCATIONS,
     GOAL_ACHIEVEMENT,
     LOCATION_NAME_TO_ID,
@@ -20,8 +21,13 @@ from .bases import BitburnerTestBase
 EXPECTED_ACHIEVEMENT_COUNT = 68
 EXPECTED_BACKDOOR_COUNT = 70
 EXPECTED_FACTION_COUNT = 27
+EXPECTED_DARKWEB_COUNT = 11
 EXPECTED_AUGMENTATION_COUNT = 136
 EXPECTED_PROGRAM_COUNT = 5
+
+# Where each block of locations starts, given the append-only ordering above.
+FACTION_BLOCK_START = EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT
+DARKWEB_BLOCK_START = FACTION_BLOCK_START + EXPECTED_FACTION_COUNT
 
 
 class TestClientContract(BitburnerTestBase):
@@ -33,6 +39,7 @@ class TestClientContract(BitburnerTestBase):
         self.assertEqual(len(ACHIEVEMENT_LOCATIONS), EXPECTED_ACHIEVEMENT_COUNT)
         self.assertEqual(len(BACKDOOR_LOCATIONS), EXPECTED_BACKDOOR_COUNT)
         self.assertEqual(len(FACTION_LOCATIONS), EXPECTED_FACTION_COUNT)
+        self.assertEqual(len(DARKWEB_PURCHASE_LOCATIONS), EXPECTED_DARKWEB_COUNT)
         self.assertEqual(len(AUGMENTATION_ITEMS), EXPECTED_AUGMENTATION_COUNT)
         self.assertEqual(len(PROGRAM_ITEMS), EXPECTED_PROGRAM_COUNT)
 
@@ -40,8 +47,7 @@ class TestClientContract(BitburnerTestBase):
         # A duplicate name would silently collapse two entries into one ID. This is the check that
         # catches a faction join being added when an achievement already covers it.
         with self.subTest("locations"):
-            expected = EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT + EXPECTED_FACTION_COUNT
-            self.assertEqual(len(LOCATION_NAME_TO_ID), expected)
+            self.assertEqual(len(LOCATION_NAME_TO_ID), DARKWEB_BLOCK_START + EXPECTED_DARKWEB_COUNT)
 
         with self.subTest("items"):
             self.assertEqual(len(ITEM_NAME_TO_ID), EXPECTED_AUGMENTATION_COUNT + EXPECTED_PROGRAM_COUNT + 1)
@@ -66,7 +72,12 @@ class TestClientContract(BitburnerTestBase):
             "Join CyberSec": BASE_ID,
             "Acquire Source Genesis": BASE_ID + 13,
             "Backdoor ecorp": BASE_ID + EXPECTED_ACHIEVEMENT_COUNT,
-            "Backdoor w0r1d_d43m0n": BASE_ID + EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT - 1,
+            "Backdoor w0r1d_d43m0n": BASE_ID + FACTION_BLOCK_START - 1,
+            "Join ECorp": BASE_ID + FACTION_BLOCK_START,
+            "Join Shadows of Anarchy": BASE_ID + DARKWEB_BLOCK_START - 1,
+            # Appended after the factions, so the ids above did not move.
+            "Purchase BruteSSH.exe": BASE_ID + DARKWEB_BLOCK_START,
+            "Purchase Formulas.exe": BASE_ID + DARKWEB_BLOCK_START + EXPECTED_DARKWEB_COUNT - 1,
         }
         for name, expected_id in anchors.items():
             with self.subTest(name):
@@ -76,6 +87,19 @@ class TestClientContract(BitburnerTestBase):
         self.assertEqual(ITEM_NAME_TO_ID[FILLER_ITEM], BASE_ID + EXPECTED_AUGMENTATION_COUNT)
         # Programs were appended after the filler precisely so the ids above did not move.
         self.assertEqual(ITEM_NAME_TO_ID["BruteSSH.exe"], BASE_ID + EXPECTED_AUGMENTATION_COUNT + 1)
+
+    def test_darkweb_purchases_cover_exactly_what_the_darkweb_sells(self) -> None:
+        # The client derives these names from src/DarkWeb/DarkWebItems.ts, so this list must match it
+        # entry for entry. Programs the darkweb does not sell must not appear: NUKE.exe is owned from
+        # the start, b1t_flum3.exe and fl1ght.exe are not purchasable, and a purchase location for any
+        # of them would never be reachable.
+        for name in DARKWEB_PURCHASE_LOCATIONS:
+            with self.subTest(name):
+                self.assertIn(name, LOCATION_NAME_TO_ID)
+
+        for program in ("NUKE.exe", "b1t_flum3.exe", "fl1ght.exe", "STORM_SEED.exe"):
+            with self.subTest(program):
+                self.assertNotIn(f"Purchase {program}", LOCATION_NAME_TO_ID)
 
     def test_source_genesis_is_both_a_check_and_the_goal(self) -> None:
         # SF1.1 is now a real check as well as the goal trigger, so finishing the run sends a check

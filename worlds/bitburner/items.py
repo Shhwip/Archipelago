@@ -171,8 +171,10 @@ FILLER_ITEM = "NeuroFlux Governor"
 # what NUKE needs to root a server, and rooting is what backdooring needs, so they gate 63 of the
 # 70 backdoor checks in a clean staircase.
 #
-# They only work as gates because the client stops you creating them in the terminal or buying them
-# from the darkweb. Without that, any rule referencing them would be vacuous.
+# The client does NOT stop you writing these yourself or buying them from the darkweb, so the gating
+# is one-directional: logic never expects a server the player cannot reach, but the player can get
+# ahead of logic by making their own. That is safe -- over-restrictive logic still generates winnable
+# seeds -- and it is a deliberate choice, not an oversight. Buying one is a check in its own right.
 PROGRAM_ITEMS = [
     "BruteSSH.exe",
     "FTPCrack.exe",

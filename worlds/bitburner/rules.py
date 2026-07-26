@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from rule_builder.rules import Has, HasAny, HasFromListUnique
+from rule_builder.rules import Has, HasFromListUnique
 
 from . import items, locations, regions
-from .options import Goal
 
 if TYPE_CHECKING:
     from .world import BitburnerWorld
@@ -33,14 +32,8 @@ def set_all_entrance_rules(world: BitburnerWorld) -> None:
 
 
 def set_victory_rule(world: BitburnerWorld) -> None:
-    if world.options.goal == Goal.option_any_augmentation:
-        # Only the augmentations actually in this seed's pool can be required.
-        world.set_rule(
-            world.get_location(locations.VICTORY_LOCATION),
-            HasAny(*items.get_enabled_augmentations(world)),
-        )
-        return
-
+    # Source Genesis is the only goal, so this is unconditional.
+    #
     # Source Genesis means backdooring w0r1d_d43m0n, which needs all five ports open. That is a real
     # requirement rather than a guess, so unlike the previous version this goal is now gated.
     #

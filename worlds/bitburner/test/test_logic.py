@@ -12,6 +12,7 @@ from ..locations import (
     BACKDOOR_LOCATIONS,
     BACKDOOR_PORT_REQUIREMENT,
     CONTENT_LOCATIONS,
+    DARKWEB_PURCHASE_LOCATIONS,
     FACTION_LOCATIONS,
 )
 from .bases import BitburnerTestBase
@@ -97,7 +98,12 @@ class TestItemBudget(unittest.TestCase):
         for enabled_flags in itertools.product([False, True], repeat=len(toggles)):
             enabled = {name for name, on in zip(toggles, enabled_flags) if on}
 
-            locations = len(ACHIEVEMENT_LOCATIONS) + len(BACKDOOR_LOCATIONS) + len(FACTION_LOCATIONS)
+            locations = (
+                len(ACHIEVEMENT_LOCATIONS)
+                + len(BACKDOOR_LOCATIONS)
+                + len(FACTION_LOCATIONS)
+                + len(DARKWEB_PURCHASE_LOCATIONS)
+            )
             for toggle, names in CONTENT_LOCATIONS.items():
                 if toggle not in enabled:
                     locations -= len(names)

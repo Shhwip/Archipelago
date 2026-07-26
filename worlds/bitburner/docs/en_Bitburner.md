@@ -5,19 +5,18 @@
 Augmentations become Archipelago items. You receive them from the multiworld instead of buying
 them, and they are applied immediately, without an install or reset.
 
-The five port-opener programs also become items, and you can no longer write them yourself or buy
-them from the darknet. Since NUKE needs open ports to root a server, and rooting is what lets you
-backdoor it, which programs you have found decides how much of the network you can reach.
+The five port-opener programs also become items. You can still write them yourself and still buy them
+from the darkweb — nothing is taken away — but logic assumes you are waiting on the items, so the
+number of port openers you have received decides how much of the network the multiworld expects you
+to reach. Writing your own simply puts you ahead of logic.
 
-Earning achievements, joining factions, and installing backdoors all send checks.
+Earning achievements, joining factions, installing backdoors, and buying programs from the darkweb
+all send checks.
 
 ## What is the goal?
 
-Acquire Source Genesis — destroy BitNode 1 and earn the SF1.1 achievement.
-
-Because that takes hours, the `goal` option offers `any_augmentation` as an alternative that
-finishes as soon as you receive a single augmentation. It exists to verify a setup works, not to
-be played.
+Acquire Source Genesis — destroy BitNode 1 and earn the SF1.1 achievement. This is currently the
+only value of the `goal` option.
 
 ## Which items can be in another player's world?
 
@@ -30,15 +29,21 @@ Archipelago server, not shown in Bitburner itself.
 
 ## What are the checks?
 
-Up to 165, from three sources:
+Up to 176, from four sources:
 
 - **68 achievements.** Everything except the secret achievements, the source file achievements for
   other BitNodes, and the challenge-run achievements.
 - **70 server backdoors**, one per server in Bitburner's fixed server list.
 - **27 faction joins**, for the factions whose join is not already an achievement.
+- **11 darkweb purchases**, one per program the darkweb sells. These need the TOR router.
 
-A default seed has 145 of those. The rest belong to content options that are off unless you turn
+A default seed has 156 of those. The rest belong to content options that are off unless you turn
 them on.
+
+A darkweb purchase is the *purchase*, not owning the program — so being given a program by
+Archipelago or by an augmentation does not send it. If you already have a program and want its check,
+delete it with `rm <program>.exe` and buy it. That is also the only way to get the
+`DarkscapeNavigator.exe` check if you picked it up from the Shadowed Walkway.
 
 ## Content options
 
@@ -53,3 +58,7 @@ Turn one on only if your run can actually reach that content.
 Logic covers open ports, which is what gates the backdoors. It does not yet cover required hacking
 skill, money, or faction reputation, so a check can be in logic while still being a long grind
 away.
+
+Because program acquisition is not restricted, the port requirements are deliberately conservative:
+logic will never expect you to reach a server you cannot, but you can get ahead of it by writing or
+buying your own port openers.

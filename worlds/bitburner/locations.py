@@ -202,11 +202,45 @@ FACTION_LOCATIONS = [
     "Join Shadows of Anarchy",
 ]
 
+# Buying a program from the darkweb with the 'buy' command.
+#
+# Every item the darkweb sells, in the order src/DarkWeb/DarkWebItems.ts lists them. Unlike acquiring
+# the program -- which five of these already have an achievement check for -- this is specifically the
+# purchase, so the client records it where the purchase happens rather than deriving it from whether
+# the player owns the file. Owning a program says nothing about how it was obtained.
+#
+# A player who already has a program can still get its check: 'rm <program>.exe' deletes it, and it can
+# then be bought. That is the only route for DarkscapeNavigator.exe if it was taken from the Shadowed
+# Walkway, which bypasses the darkweb.
+#
+# None of these are gated by a BitNode or Source File, so all eleven are reachable in a first BN1 run
+# with the TOR router and enough money.
+DARKWEB_PURCHASE_LOCATIONS = [
+    "Purchase BruteSSH.exe",
+    "Purchase FTPCrack.exe",
+    "Purchase relaySMTP.exe",
+    "Purchase HTTPWorm.exe",
+    "Purchase SQLInject.exe",
+    "Purchase ServerProfiler.exe",
+    "Purchase DeepscanV1.exe",
+    "Purchase DeepscanV2.exe",
+    "Purchase AutoLink.exe",
+    "Purchase DarkscapeNavigator.exe",
+    "Purchase Formulas.exe",
+]
+
 # IMPORTANT: As with items, IDs come from this order and must stay stable once seeds exist.
 # Appended after the backdoors rather than interleaved, so earlier ids keep their values.
 LOCATION_NAME_TO_ID = {
     name: items.BASE_ID + index
-    for index, name in enumerate([*ACHIEVEMENT_LOCATIONS, *BACKDOOR_LOCATIONS, *FACTION_LOCATIONS])
+    for index, name in enumerate(
+        [
+            *ACHIEVEMENT_LOCATIONS,
+            *BACKDOOR_LOCATIONS,
+            *FACTION_LOCATIONS,
+            *DARKWEB_PURCHASE_LOCATIONS,
+        ]
+    )
 }
 
 # Which server each backdoor check belongs to, and how many ports that server needs opened. This is
@@ -352,8 +386,13 @@ def create_all_locations(world: BitburnerWorld) -> None:
     disabled = get_disabled_locations(world)
     bitnode = world.get_region(regions.ORIGIN_REGION)
 
-    # Achievements and faction joins have no port requirement, so they sit in the origin region.
-    ungated = [name for name in (*ACHIEVEMENT_LOCATIONS, *FACTION_LOCATIONS) if name not in disabled]
+    # Achievements, faction joins and darkweb purchases have no port requirement, so they sit in the
+    # origin region. The purchases need the TOR router and money, neither of which is modelled.
+    ungated = [
+        name
+        for name in (*ACHIEVEMENT_LOCATIONS, *FACTION_LOCATIONS, *DARKWEB_PURCHASE_LOCATIONS)
+        if name not in disabled
+    ]
     bitnode.add_locations({name: LOCATION_NAME_TO_ID[name] for name in ungated}, BitburnerLocation)
 
     # Backdoors go to the region for the number of ports their server needs.

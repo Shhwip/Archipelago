@@ -43,19 +43,3 @@ class TestSourceGenesisGoal(BitburnerTestBase):
             # w0r1d_d43m0n needs all five ports, so this is the floor for destroying BitNode 1.
             self.collect_by_name(PROGRAM_ITEMS[4])
             self.assertTrue(victory.can_reach(self.multiworld.state))
-
-
-class TestAnyAugmentationGoal(BitburnerTestBase):
-    options = {
-        "goal": "any_augmentation",
-    }
-
-    def test_victory_needs_an_augmentation(self) -> None:
-        victory = self.world.get_location(VICTORY_LOCATION)
-
-        with self.subTest("Test that victory is unreachable with nothing"):
-            self.assertFalse(victory.can_reach(self.multiworld.state))
-
-        with self.subTest("Test that a single augmentation is enough"):
-            self.collect_by_name(get_enabled_augmentations(self.world)[0])
-            self.assertTrue(victory.can_reach(self.multiworld.state))
