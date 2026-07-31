@@ -1,4 +1,4 @@
-from ..items import FILLER_ITEM, PROGRAM_ITEMS, get_enabled_augmentations
+from ..items import FILLER_ITEM, PORT_OPENER_ITEMS, PROGRAM_ITEMS, get_enabled_augmentations
 from ..locations import VICTORY_LOCATION
 from .bases import BitburnerTestBase
 
@@ -34,12 +34,12 @@ class TestSourceGenesisGoal(BitburnerTestBase):
         with self.subTest("Test that victory is unreachable with no programs"):
             self.assertFalse(victory.can_reach(self.multiworld.state))
 
-        with self.subTest("Test that four programs are not enough"):
-            for program in PROGRAM_ITEMS[:4]:
+        with self.subTest("Test that four port openers are not enough"):
+            for program in PORT_OPENER_ITEMS[:4]:
                 self.collect_by_name(program)
             self.assertFalse(victory.can_reach(self.multiworld.state))
 
         with self.subTest("Test that the fifth program opens the way"):
             # w0r1d_d43m0n needs all five ports, so this is the floor for destroying BitNode 1.
-            self.collect_by_name(PROGRAM_ITEMS[4])
+            self.collect_by_name(PORT_OPENER_ITEMS[4])
             self.assertTrue(victory.can_reach(self.multiworld.state))

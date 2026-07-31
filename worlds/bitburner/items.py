@@ -167,21 +167,38 @@ AUGMENTATION_ITEMS = [
 # Bitburner augmentation that is genuinely repeatable, gaining a level on each grant.
 FILLER_ITEM = "NeuroFlux Governor"
 
-# The five port-opener programs. These are the backbone of this world's logic: opening ports is
-# what NUKE needs to root a server, and rooting is what backdooring needs, so they gate 63 of the
-# 70 backdoor checks in a clean staircase.
+# Every program the darkweb sells. The multiworld is the only source of these: as of client support
+# for it, buying or writing one sends its check and hands the program to the multiworld instead of to
+# the player, so the item pool is the sole way to actually obtain the file.
 #
-# The client does NOT stop you writing these yourself or buying them from the darkweb, so the gating
-# is one-directional: logic never expects a server the player cannot reach, but the player can get
-# ahead of logic by making their own. That is safe -- over-restrictive logic still generates winnable
-# seeds -- and it is a deliberate choice, not an oversight. Buying one is a check in its own right.
+# That is what makes the port-tier logic below load-bearing rather than advisory. The first five are
+# the port openers, the backbone of this world's logic: opening ports is what NUKE needs to root a
+# server, and rooting is what backdooring needs, so they gate 63 of the 70 backdoor checks in a clean
+# staircase. Because the player can no longer write their own, logic now describes what the player
+# can do rather than merely bounding it.
+#
+# The remaining six gate nothing and are not named by any rule. They are here because the shops stop
+# granting them: without a matching item they would be unobtainable for a whole run.
+#
+# IMPORTANT: the first five must stay first and in this order. Ids come from position, and seeds
+# generated when this list held only the port openers baked those five ids in.
 PROGRAM_ITEMS = [
     "BruteSSH.exe",
     "FTPCrack.exe",
     "relaySMTP.exe",
     "HTTPWorm.exe",
     "SQLInject.exe",
+    "ServerProfiler.exe",
+    "DeepscanV1.exe",
+    "DeepscanV2.exe",
+    "AutoLink.exe",
+    "DarkscapeNavigator.exe",
+    "Formulas.exe",
 ]
+
+# The port openers, kept separate because they are the only programs any rule names. rules.py builds
+# the port staircase and the victory condition from this, not from PROGRAM_ITEMS.
+PORT_OPENER_ITEMS = PROGRAM_ITEMS[:5]
 
 # Augmentations only obtainable through content a BitNode 1 run cannot reach. Each set is added to
 # the pool only when its matching option is enabled, alongside that content's locations, so that

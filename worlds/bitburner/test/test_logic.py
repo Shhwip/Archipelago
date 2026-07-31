@@ -4,6 +4,7 @@ import unittest
 from ..items import (
     AUGMENTATION_ITEMS,
     BLADEBURNER_AUGMENTATIONS,
+    PORT_OPENER_ITEMS,
     PROGRAM_ITEMS,
     STANEK_AUGMENTATIONS,
 )
@@ -42,9 +43,9 @@ class TestPortLogic(BitburnerTestBase):
                 self.assertFalse(self.world.get_location(name).can_reach(self.multiworld.state))
 
     def test_each_program_opens_the_next_tier(self) -> None:
-        # Programs are interchangeable: what matters is how many you hold, not which. Collecting
+        # Port openers are interchangeable: what matters is how many you hold, not which. Collecting
         # them in order should unlock the tiers in order.
-        for held, program in enumerate(PROGRAM_ITEMS, start=1):
+        for held, program in enumerate(PORT_OPENER_ITEMS, start=1):
             self.collect_by_name(program)
 
             with self.subTest(f"{held} programs unlocks tier {held}"):

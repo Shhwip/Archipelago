@@ -1,4 +1,11 @@
-from ..items import AUGMENTATION_ITEMS, BASE_ID, FILLER_ITEM, ITEM_NAME_TO_ID, PROGRAM_ITEMS
+from ..items import (
+    AUGMENTATION_ITEMS,
+    BASE_ID,
+    FILLER_ITEM,
+    ITEM_NAME_TO_ID,
+    PORT_OPENER_ITEMS,
+    PROGRAM_ITEMS,
+)
 from ..locations import (
     ACHIEVEMENT_LOCATIONS,
     BACKDOOR_LOCATIONS,
@@ -25,7 +32,8 @@ EXPECTED_FACTION_COUNT = 27
 EXPECTED_DARKWEB_COUNT = 11
 EXPECTED_CREATION_COUNT = 10
 EXPECTED_AUGMENTATION_COUNT = 136
-EXPECTED_PROGRAM_COUNT = 5
+EXPECTED_PROGRAM_COUNT = 11
+EXPECTED_PORT_OPENER_COUNT = 5
 
 # Where each block of locations starts, given the append-only ordering above.
 FACTION_BLOCK_START = EXPECTED_ACHIEVEMENT_COUNT + EXPECTED_BACKDOOR_COUNT
@@ -46,6 +54,7 @@ class TestClientContract(BitburnerTestBase):
         self.assertEqual(len(PROGRAM_CREATION_LOCATIONS), EXPECTED_CREATION_COUNT)
         self.assertEqual(len(AUGMENTATION_ITEMS), EXPECTED_AUGMENTATION_COUNT)
         self.assertEqual(len(PROGRAM_ITEMS), EXPECTED_PROGRAM_COUNT)
+        self.assertEqual(len(PORT_OPENER_ITEMS), EXPECTED_PORT_OPENER_COUNT)
 
     def test_every_creatable_program_is_also_purchasable(self) -> None:
         # The reachability argument for this block. A program that can only be created is one whose
@@ -58,6 +67,38 @@ class TestClientContract(BitburnerTestBase):
         self.assertLess(created, purchasable)
         # DarkscapeNavigator.exe is the one sold program with no create recipe.
         self.assertEqual(purchasable - created, {"DarkscapeNavigator.exe"})
+
+    def test_the_item_pool_covers_every_purchasable_program(self) -> None:
+        # The client suppresses the shop grant for exactly the programs it believes the multiworld can
+        # supply, and it derives that set from its own DarkWebItems rather than from a copied list. So
+        # these two must stay equal: a purchasable program missing from the pool would be suppressed
+        # with nothing able to grant it, i.e. unobtainable for the whole run.
+        purchasable = {name.removeprefix("Purchase ") for name in DARKWEB_PURCHASE_LOCATIONS}
+
+        self.assertEqual(set(PROGRAM_ITEMS), purchasable)
+
+    def test_port_openers_lead_the_program_items(self) -> None:
+        # Ids come from position, so the five that existed before the pool was widened must stay first
+        # and in order, or every seed generated against the old list is wrong.
+        self.assertEqual(
+            PORT_OPENER_ITEMS,
+            ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"],
+        )
+        self.assertEqual(PROGRAM_ITEMS[:EXPECTED_PORT_OPENER_COUNT], PORT_OPENER_ITEMS)
+
+        # The other six open no ports. Naming them in a port rule would let a player satisfy a tier
+        # without holding a single opener, so nothing in rules.py may reference PROGRAM_ITEMS.
+        self.assertEqual(
+            set(PROGRAM_ITEMS[EXPECTED_PORT_OPENER_COUNT:]),
+            {
+                "ServerProfiler.exe",
+                "DeepscanV1.exe",
+                "DeepscanV2.exe",
+                "AutoLink.exe",
+                "DarkscapeNavigator.exe",
+                "Formulas.exe",
+            },
+        )
 
     def test_names_are_unique(self) -> None:
         # A duplicate name would silently collapse two entries into one ID. This is the check that
